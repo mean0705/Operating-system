@@ -1,0 +1,21 @@
+使用開發環境：
+    使用軟體: visual studio  // win10
+    使用Python語言
+使用的data structure 及流程: 
+
+先建立一個class來存取每筆資料的id, arrival time...等等資料，另外再加上自己在處理資料時會用到的資料，像是hasBeen(用來判斷是否進過cpu處理過)，因為需要知道他是否進過cpu，以及cpu_leftTime(用來記錄當下剩下的cpu_burst)，讓它變成動態來處理，最後再將這一個個的資料用一個list存取起來，來去做各個任務。
+
+FCFS:
+    將上述所提的list以arrival time由小到大排序，並設置一個current time = 第一個資料到達的時間，當作當前時間，然後開始一個一個如果arrival time已到就丟進waiting queue裡執行，若中間沒有process在執行或在waiting queue裡，current time一樣繼續+1，直到所有process跑完為止才結束。
+	
+RR:
+    同上，但在進入cpu執行時，多了一個time slice的限制，一個proces最多只能執行一個time slice，若在time slice執行其中，此process執行結束，就將此process加進final_list裡(最後要output的list)，較為直觀，若time out，則由下一個在waiting queue裡等待的process進入cpu，若沒有，current time一樣繼續+1，直到所有process跑完為止才結束。
+
+PSJF:
+    結構一樣同FCFS，但在進入cpu執行時，waiting queue裡每次進出時皆須排序，排序順序為'剩下的cpu_leftTime', 'hasBeen', 'arrival_time', 'id', 且若當進來了一個cpu_leftTime比正在執行的process還小的話，就需要搶奪，則其它結構與上述兩者相同。
+
+NON-PSJF:
+    結構同上，只是正在執行cpu的process在執行時不需因為有進來比它cpu_leftTime還小的process，就將執行權交給它，必須等到正在執行的process執行完才繼續換下一個在waiting queue裡等待的process執行，同上，如果waiting queue裡沒有東西，且所有process還沒全部進來，則current time繼續+1
+
+Priority:
+    結構與PSJF幾乎相同，是差在排序順序為'Priority', 'hasBeen', 'arrival_time', 'id'，且也需要搶奪，其它結構則相同。

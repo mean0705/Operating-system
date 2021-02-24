@@ -1,0 +1,30 @@
+def mission4(fileName, f):
+    numOfCopy = input('How many copies of this document do you want?: ')
+    while not numOfCopy.isdigit():
+         print('this is not integer...please enter again')
+         numOfCopy = input('value k: ')
+    numOfCopy = int(numOfCopy)
+
+    start = time.perf_counter() # clock start
+
+    sepList = SeperatedList(fileName, numOfCopy, f) # get the processed sepratedly list
+    manager = multiprocessing.Manager()
+    q = manager.Queue(numOfCopy) # a queue to store several lists which are sorted by Bubblesort
+    # just put the separated list into the Process_BubbleAndMerge function as a process
+    process_BubbleAndMerge = multiprocessing.Process(target = Process_BubbleAndMerge, args = (sepList, q))
+    process_BubbleAndMerge.start()
+    process_BubbleAndMerge.join()
+
+    cpu_time = time.perf_counter() - start # clock end
+
+    print('\nCPU Time: ' + str(cpu_time))
+    WriteFile(fileName, q.get(), cpu_time)
+	
+def Process_BubbleAndMerge(list, result):
+    for l in list:
+        BubbleSort(l, result)
+
+    while result.qsize() != 1:
+        _leftlist = result.get()
+        _rightlist = result.get()
+        MergeSort(_leftlist, _rightlist, result)
